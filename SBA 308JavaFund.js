@@ -182,6 +182,9 @@ function getLearnerData(course, ag, submissions) {
    
 
   }
+  console.log("Unique learner ids found:", ids);
+
+
  console.log(ids);
   // 2. Create Learner Obj
   for (let learnerId of ids) {
@@ -192,16 +195,26 @@ function getLearnerData(course, ag, submissions) {
     result.push(learnersReport);
 
     // Need a variable to store totals!
-    let score = 0
+    let totalscore = 0
     let totalPossible = 0
         // if (!isAssignmentDue(matchingAssignment.due_at)) continue;
 
+        // find all submissions belonging to this learner
     for (let i = 0; i < submissions.length; i++) {
+      
+      //  process submissions for this learner
       if (submissions[i].learner_id === learnerId) {
+        let assignmentId   = submissions[i].assignment_id;
+        let submittedAt    = submissions[i].submission.submitted_at;
+        let subScore       = submissions[i].submission.score;
+
+        // pointsPossible helper function 
+        let possible = pointsPossible(ag.assignments, assignmentId);
+
 
         console.log("Submission Score: " +submissions[i].submission.score)
-        score += submissions[i].submission.score;
-        totalPossible += pointsPossible(AssignmentGroup.assignments, submissions[i].assignment_id)
+        totalscore += submissions[i].submission.score;
+        totalPossible += possible;
         // if (isSubmissionLate(submissions[i].submission.submitted_at, matchingAssignment.due_at)) {
           // Apply penalty or handle late submission
         }
@@ -209,7 +222,7 @@ function getLearnerData(course, ag, submissions) {
         for (let j = 0; j < AssignmentGroup.assignments.length; j++) {
           if (AssignmentGroup.assignments[j].id == submissions[i].assignment_id) {
             // console.log("They Match!")
-            console.log("points Possible: " + AssignmentGroup.assignments[0].points_possible)
+            console.log("points Possible: " + AssignmentGroup.assignments[j].points_possible)
             break;
           // } else if (AssignmentGroup.assignments[1].id != submissions[i].assignment_id) {
             // console.log("They Match!")
@@ -217,10 +230,10 @@ function getLearnerData(course, ag, submissions) {
           }
         }
       }
-
+console.log("Total Score:", +totalscore);
     }
 
-    console.log("Total Score:", +score);
+    
 
   }
   // }
