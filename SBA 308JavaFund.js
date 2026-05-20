@@ -28,112 +28,224 @@ const CourseInfo = {
   name: "Introduction to JavaScript"
 };
 
-//  AssignmentGroup - belongs to a course (matched by course_id)
+// The provided assignment group.
 const AssignmentGroup = {
   id: 12345,
   name: "Fundamentals of JavaScript",
-  course_id: CourseInfo.id,          // must match CourseInfo.id
-  group_weight: 25,    // worth 25% of the total grade 
-  assignments: [
-    { id: 1, name: "Declare a Variable",   due_at: "2023-01-25", points_possible: 50  }, 
-    { id: 2, name: "Write a Function",     due_at: "2023-02-27", points_possible: 150 }, 
-    { id: 3, name: "Code the World",       due_at: "3156-11-15", points_possible: 500 }  // Not due yet = skip
-    // future - ignored
+  course_id: 451,
+  group_weight: 25,
+  assignments: [{
+      id: 1,
+      name: "Declare a Variable",
+      due_at: "2023-01-25",
+      points_possible: 50
+    },
+    {
+      id: 2,
+      name: "Write a Function",
+      due_at: "2023-02-27",
+      points_possible: 150
+    },
+    {
+      id: 3,
+      name: "Code the World",
+      due_at: "3156-11-15",
+      points_possible: 500
+    }
   ]
 };
 
-//  Learner submissions – what they turned in and when 
-const LearnerSubmissions = [
-  { learner_id: 125, assignment_id: 1, submission: { submitted_at: "2023-01-25", score: 47 } },
-  { learner_id: 125, assignment_id: 2, submission: { submitted_at: "2023-02-12", score: 150 } },
-  { learner_id: 125, assignment_id: 3, submission: { submitted_at: "2023-01-25", score: 400 } },
-  { learner_id: 132, assignment_id: 1, submission: { submitted_at: "2023-01-24", score: 39 } },
-  { learner_id: 132, assignment_id: 2, submission: { submitted_at: "2023-03-07", score: 140 } } // late
+// The provided learner submission data.
+const LearnerSubmissions = [{
+    learner_id: 125,
+    assignment_id: 1,
+    submission: {
+      submitted_at: "2023-01-25",
+      score: 47
+    }
+  },
+  {
+    learner_id: 125,
+    assignment_id: 2,
+    submission: {
+      submitted_at: "2023-02-12",
+      score: 150
+    }
+  },
+  {
+    learner_id: 125,
+    assignment_id: 3,
+    submission: {
+      submitted_at: "2023-01-25",
+      score: 400
+    }
+  },
+  {
+    learner_id: 132,
+    assignment_id: 1,
+    submission: {
+      submitted_at: "2023-01-24",
+      score: 39
+    }
+  },
+  {
+    learner_id: 132,
+    assignment_id: 2,
+    submission: {
+      submitted_at: "2023-03-07",
+      score: 140
+    }
+  }
 ];
 
 
 
-console.log("CourseInfo:-------", CourseInfo,   
-    "\nAssignmentGroup:------ ", AssignmentGroup, 
-    "LearnerSubmissions:-------", LearnerSubmissions);
+const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+
+// console.log(result);
+
+
+// console.log("CourseInfo:-------", CourseInfo,
+//   "\nAssignmentGroup:------ ", AssignmentGroup,
+//   "LearnerSubmissions:-------", LearnerSubmissions);
 
 
 
 
 // Helper Functions - break it down into little helpers 
-// Helper 1 - check assignment due date has passed / Dont include future assignment
-// compare due date to todays 
-
-function isAssignmentDue() {
-    const today = new Date();        //todays date 
-    const due = new Date(dueDate);  //converting str into real date obj
-    return due <= today             //true due date is today or in past 
+//  
+// Helper 1 - Has the assignment's due date already passed?
+function isAssignmentDue(dueDate) { // <-- added dueDate parameter (was missing!)
+  const today = new Date();
+  const due = new Date(dueDate);
+  return due <= today; // true = it's due, include it
 }
 
-// Helper 2 -
-// Late Submissions lose 10% of points as penalty 
-// comparing submitted_at date to due_at
-
+// Helper 2 - Was the submission turned in late?
 function isSubmissionLate(submittedAt, dueAt) {
-    // convert date str into date obj
   const submitted = new Date(submittedAt);
   const due = new Date(dueAt);
-  return submitted > due;   // true if submitted AFTER due date
+  return submitted > due; // true = late, apply penalty
 }
 
-
-// Helper 3 Make sure data makes sense 
-// Does the AssignmentGroup belong to this course?
+// Helper 3 - Does the assignment group actually belong to this course?
 function validateData(course, assignmentGroup) {
-    if (assignmentGroup.course_id !== course.id) {
+  if (assignmentGroup.course_id !== course.id) {
     throw new Error(
       `Invalid data: AssignmentGroup "${assignmentGroup.name}" does not belong to course "${course.name}".`
     );
   }
 
-//  check for bad data
   for (const assignment of assignmentGroup.assignments) {
-
-    // points_possible of 0 would cause division by zero - red flag 
     if (typeof assignment.points_possible !== "number" || assignment.points_possible <= 0) {
-        // console.log(typeof assignment.points_possible);
-        // console.log(assignment.points_possible);
-
       throw new Error(
-        `Invalid data: Assignment "${assignment.name}" has an invalid points_possible value.`
-        
-
+        `Invalid data: Assignment "${assignment.name}" has invalid points_possible.`
       );
     }
   }
 }
-try { validateData(CourseInfo, AssignmentGroup); console.log("data ok"); }
-catch (e) { console.error(e.message); }
-
-// Learning report learner id 
-// Check Data Always -------------
-
-function getLearnerData(course, assignmentGroup, learnerSubmission) {
-    try {
-    validateData(course, assignmentGroup);
-  } catch (error) {
-    
-    // If validation fails 
-    console.error("Data validation error:", error.message);
-    return []; 
-    // don't process bad data
-  }
-
-}
 
 // BUILD A LOOKUP MAP FOR ASSIGNMENTS
 // create an object where the key = assignment id.
-  // 
-  
+// 
+// const assignmentMap = {}; // empty object to fill
+
+// for (const assignment of assignmentGroup.assignments) {
+//   // Only actually due assignments 
+//   if (isAssignmentDue(assignment.due_at)) {
+//     assignmentMap[assignment.id] = assignment; // store by id
+//   }
+// }
+
+
+function pointsPossible( agArray, assignment_id) {
+  for (let j = 0; j < agArray.length; j++) {
+    if (agArray[j].id == assignment_id) {
+      return agArray[j].points_possible
+    }
+  }
+}
 
 
 
+function getLearnerData(course, ag, submissions) {
+
+  const result = []
+
+  const ids = []
+
+  for (let sub of submissions) {
+
+    if (ids.includes(sub.learner_id) !== true) {
+      ids.push(sub.learner_id);
+    }
+    console.log(ids);
+
+  }
+
+  // 2. Create Learner Obj
+  for (let learnerId of ids) {
+    let learnersReport = {
+      id: learnerId
+    }
+    console.log(learnersReport)
+    result.push(learnersReport);
+
+    // Need a variable to store totals!
+    let score = 0
+    let totalPossible = 0
+
+    for (let i = 0; i < submissions.length; i++) {
+      if (submissions[i].learner_id === learnerId) {
+        console.log("Submission Score: " +submissions[i].submission.score)
+        score += submissions[i].submission.score;
+        totalPossible += pointsPossible(AssignmentGroup.assignments, submissions[i].assignment_id)
+
+        for (let j = 0; j < AssignmentGroup.assignments.length; j++) {
+          if (AssignmentGroup.assignments[j].id == submissions[i].assignment_id) {
+            // console.log("They Match!")
+            console.log("points Possible: " + AssignmentGroup.assignments[0].points_possible)
+            break;
+          // } else if (AssignmentGroup.assignments[1].id != submissions[i].assignment_id) {
+            // console.log("They Match!")
+            // console.log("points Possible: " + AssignmentGroup.assignments[1].points_possible)
+          }
+        }
+      }
+
+    }
+
+    console.log("Total Score:", +score)
+
+  }
+  // }
 
 
 
+  // here, we would process this data to achieve the desired result.
+  // const result = [
+  //   {
+  //     id: 125,
+  //     avg: 0.985, // (47 + 150) / (50 + 150)
+  //     1: 0.94, // 47 / 50
+  //     2: 1.0 // 150 / 150
+  //   },
+  //   {
+  //     id: 132,
+  //     avg: 0.82, // (39 + 125) / (50 + 150)
+  //     1: 0.78, // 39 / 50
+  //     2: 0.833 // late: (140 - 15) / 150
+  //   }
+  // ];
 
+  // return result;
+
+  // }
+  // const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+
+  // function sum(x,y) { return x * y }
+
+  // console.log("Total sum:", sum(2,3))
+  // console.log("Total sum:", sum(7,10))
+  // console.log("Total sum:", sum(48,100))
+}
