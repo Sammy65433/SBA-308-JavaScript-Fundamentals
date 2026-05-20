@@ -100,7 +100,6 @@ const LearnerSubmissions = [{
 
 
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
 // console.log(result);
 
@@ -110,6 +109,7 @@ const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 //   "LearnerSubmissions:-------", LearnerSubmissions);
 
 
+const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
 
 // Helper Functions - break it down into little helpers 
@@ -179,27 +179,32 @@ function getLearnerData(course, ag, submissions) {
     if (ids.includes(sub.learner_id) !== true) {
       ids.push(sub.learner_id);
     }
-    console.log(ids);
+   
 
   }
-
+ console.log(ids);
   // 2. Create Learner Obj
   for (let learnerId of ids) {
     let learnersReport = {
       id: learnerId
     }
-    console.log(learnersReport)
+    // console.log(learnersReport)
     result.push(learnersReport);
 
     // Need a variable to store totals!
     let score = 0
     let totalPossible = 0
+        // if (!isAssignmentDue(matchingAssignment.due_at)) continue;
 
     for (let i = 0; i < submissions.length; i++) {
       if (submissions[i].learner_id === learnerId) {
+
         console.log("Submission Score: " +submissions[i].submission.score)
         score += submissions[i].submission.score;
         totalPossible += pointsPossible(AssignmentGroup.assignments, submissions[i].assignment_id)
+        // if (isSubmissionLate(submissions[i].submission.submitted_at, matchingAssignment.due_at)) {
+          // Apply penalty or handle late submission
+        }
 
         for (let j = 0; j < AssignmentGroup.assignments.length; j++) {
           if (AssignmentGroup.assignments[j].id == submissions[i].assignment_id) {
@@ -215,7 +220,7 @@ function getLearnerData(course, ag, submissions) {
 
     }
 
-    console.log("Total Score:", +score)
+    console.log("Total Score:", +score);
 
   }
   // }
@@ -248,4 +253,4 @@ function getLearnerData(course, ag, submissions) {
   // console.log("Total sum:", sum(2,3))
   // console.log("Total sum:", sum(7,10))
   // console.log("Total sum:", sum(48,100))
-}
+
