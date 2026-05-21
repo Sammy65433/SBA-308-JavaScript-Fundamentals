@@ -210,7 +210,7 @@ function getLearnerData(course, ag, submissions) {
     let totalPossible = 0;
         // if (!isAssignmentDue(matchingAssignment.due_at)) continue;
 
-        // find all submissions belonging to this learner
+        // find all submissions belonging to this learner - Quinn Loop 
     for (let i = 0; i < submissions.length; i++) {
       
       //  process submissions for this learner
@@ -253,7 +253,11 @@ function getLearnerData(course, ag, submissions) {
           continue;
         }
 
-      
+      // checking if homework assignment was turned in after its due date. 
+      // If it was, calculate a "late penalty" (which is 10% of the possible 
+      // score) and then subtracts that penalty from the score you earned. 
+      // So, if you could have gotten 100 points, but you were late, you'd lose 
+      // 10 points. 10% of 100 is 10 so 150 should be 15
        // apply late penalty if submitted after due date
         if (isSubmissionLate(submittedAt, matchingAssignment.due_at)) {
           let penalty = possible * 0.10;
