@@ -115,6 +115,9 @@ const LearnerSubmissions = [{
 // Helper Functions - break it down into little helpers 
 //  
 // Helper 1 - Has the assignment's due date already passed?
+// Is this homework already due yet?”
+// If yes, include it
+// If no, skip it for now
 function isAssignmentDue(dueDate) { // <-- added dueDate parameter (was missing!)
   const today = new Date();
   const due = new Date(dueDate);
@@ -129,6 +132,8 @@ function isSubmissionLate(submittedAt, dueAt) {
 }
 
 // Helper 3 - Does the assignment group actually belong to this course?
+// the assignment group belongs to the right course
+// each assignment has valid points
 function validateData(course, assignmentGroup) {
   if (assignmentGroup.course_id !== course.id) {
     throw new Error(
@@ -157,10 +162,10 @@ function validateData(course, assignmentGroup) {
 //   }
 // }
 
-
+// Look through all assignments until you find the one with the same id
 function pointsPossible( agArray, assignment_id) {
   for (let j = 0; j < agArray.length; j++) {
-    if (agArray[j].id == assignment_id) {
+    if (agArray[j].id === assignment_id) {
       return agArray[j].points_possible
     }
   }
@@ -172,6 +177,8 @@ function getLearnerData(course, ag, submissions) {
 
 
   // // try/catch - validate data first - tested at the bootom of the code 
+  // Before I do math, let me check if theses papers make sense.
+// If not, stop and return an empty list
   try {
     validateData(course, ag);
   } catch (error) {
@@ -198,6 +205,8 @@ function getLearnerData(course, ag, submissions) {
 //  console.log(ids);
   // 2. Create Learner Obj
   // loop over each learner id and build their report
+//   For each student ID
+// Start a report card 
   for (let learnerId of ids) {
     let learnersReport = {
       id: learnerId
@@ -210,7 +219,9 @@ function getLearnerData(course, ag, submissions) {
     let totalPossible = 0;
         // if (!isAssignmentDue(matchingAssignment.due_at)) continue;
 
-        // find all submissions belonging to this learner - Quinn Loop 
+        // find all submissions belonging to this learner - Quinn Loop
+//         Go through every submission
+// Only use the ones that belong to the current student 
     for (let i = 0; i < submissions.length; i++) {
       
       //  process submissions for this learner
@@ -388,3 +399,10 @@ try {
 } catch (e) {
   console.error("Test 3 failed:", e.message);
 }
+
+
+
+// CourseInfo = the class
+// AssignmentGroup = the homework list
+// AssignmentGroup.assignments = each homework assignment
+// LearnerSubmissions = what each student turned in
