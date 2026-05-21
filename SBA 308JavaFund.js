@@ -170,6 +170,8 @@ function pointsPossible( agArray, assignment_id) {
 
 function getLearnerData(course, ag, submissions) {
 
+
+  // // try/catch - validate data first - tested at the bootom of the code 
   try {
     validateData(course, ag);
   } catch (error) {
@@ -181,6 +183,7 @@ function getLearnerData(course, ag, submissions) {
 
   const ids = []
 
+  // unique learner ids
   for (let sub of submissions) {
 
     if (ids.includes(sub.learner_id) !== true) {
@@ -194,6 +197,7 @@ function getLearnerData(course, ag, submissions) {
 
 //  console.log(ids);
   // 2. Create Learner Obj
+  // loop over each learner id and build their report
   for (let learnerId of ids) {
     let learnersReport = {
       id: learnerId
@@ -222,8 +226,10 @@ function getLearnerData(course, ag, submissions) {
 
                     // 
         console.log("Submission Score: " +submissions[i].submission.score)
-        totalscore += submissions[i].submission.score;
-        totalPossible += possible;
+
+        // 
+        // totalscore += submissions[i].submission.score;
+        // totalPossible += possible;
         // if (isSubmissionLate(submissions[i].submission.submitted_at, matchingAssignment.due_at)) {
           // Apply penalty or handle late submission
         
@@ -235,7 +241,7 @@ function getLearnerData(course, ag, submissions) {
             matchingAssignment = ag.assignments[j];
             // console.log("They Match!")
             console.log("points Possible: " + ag.assignments[j].points_possible)
-            break; // Quinn used break here
+            break; // Quinn used break here - Got the keys stop looking 
 
           // } else if (AssignmentGroup.assignments[1].id != submissions[i].assignment_id) {
             // console.log("They Match!")
@@ -292,11 +298,11 @@ function getLearnerData(course, ag, submissions) {
     //   calculate weighted average (score / totalPossible)
     // // quin drew this on screen: 240/300 = 0.80
     // totalScore = 
-      // if (totalPossible > 0) {
-      // learnersReport.avg = (totalscore / totalPossible).toFixed(1);
-    // }
+      if (totalPossible > 0) {
+      learnersReport.avg = (totalscore / totalPossible).toFixed(2);
+    }
 
-    // console.log("Learner:", learnerId, "| avg:", learnersReport.avg);
+    console.log("Learner:", learnerId, "| avg:", learnersReport.avg);
   }
       return result;
 
@@ -347,3 +353,27 @@ console.log("FINAL RESULT:", result);
   // console.log("Total sum:", sum(7,10))
   // console.log("Total sum:", sum(48,100))
   
+try {
+  validateData({ id: 999, name: "Wrong Course" }, AssignmentGroup);
+} catch (e) {
+  console.error("Test 1 caught:", e.message);
+}
+try {
+  validateData(CourseInfo, {
+    id: 12345,
+    name: "Test Group",
+    course_id: 451,
+    group_weight: 25,
+    assignments: [
+      { id: 99, name: "Bad Assignment", due_at: "2023-01-25", points_possible: 0 }
+    ]
+  });
+} catch (e) {
+  console.error("Test 2 caught:", e.message);
+}
+try {
+  validateData(CourseInfo, AssignmentGroup);
+  console.log("Test 3 passed: data is valid");
+} catch (e) {
+  console.error("Test 3 failed:", e.message);
+}
