@@ -109,7 +109,7 @@ const LearnerSubmissions = [{
 //   "LearnerSubmissions:-------", LearnerSubmissions);
 
 
-const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+// const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
 
 
 // Helper Functions - break it down into little helpers 
@@ -217,10 +217,10 @@ function getLearnerData(course, ag, submissions) {
         let submittedAt    = submissions[i].submission.submitted_at;
         let subScore       = submissions[i].submission.score;
 
-        // pointsPossible helper function 
+        // pointsPossible helper function - Quinn built this 
         let possible = pointsPossible(ag.assignments, assignmentId);
 
-
+                    // 
         console.log("Submission Score: " +submissions[i].submission.score)
         totalscore += submissions[i].submission.score;
         totalPossible += possible;
@@ -265,7 +265,7 @@ function getLearnerData(course, ag, submissions) {
         
 
         // store individual assignment percentage like "1: 0.94"
-        learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(1));
+        learnersReport[assignmentId] = (subScore / possible).toFixed(1);
 
 // parseFloat() - MdN parsefloat 
 // A floating point number parsed from the given string, or 
@@ -283,16 +283,39 @@ function getLearnerData(course, ag, submissions) {
 
 
         
-        console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| %:", learnersReport[assignmentId]);
+        console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| Percentage %:", learnersReport[assignmentId]);
       }
+          // console.log("Total Score:", +totalscore);
+
+      }
+      // return result;
+    //   calculate weighted average (score / totalPossible)
+    // // quin drew this on screen: 240/300 = 0.80
+    // totalScore = 
+      // if (totalPossible > 0) {
+      // learnersReport.avg = (totalscore / totalPossible).toFixed(1);
+    // }
+
+    // console.log("Learner:", learnerId, "| avg:", learnersReport.avg);
+  }
+      return result;
+
+
     }
 
-console.log("Total Score:", +totalscore);
-    }
+    const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+console.log("FINAL RESULT:", result);
+
+//      const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+// console.log("FINAL RESULT:", result);
+
+
 
     
 
-  }
+    
+
+  
   // }
 
 
