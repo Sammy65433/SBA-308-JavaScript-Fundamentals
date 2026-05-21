@@ -185,7 +185,7 @@ function getLearnerData(course, ag, submissions) {
   console.log("Unique learner ids found:", ids);
 
 
- console.log(ids);
+//  console.log(ids);
   // 2. Create Learner Obj
   for (let learnerId of ids) {
     let learnersReport = {
@@ -195,8 +195,8 @@ function getLearnerData(course, ag, submissions) {
     result.push(learnersReport);
 
     // Need a variable to store totals!
-    let totalscore = 0
-    let totalPossible = 0
+    let totalscore = 0;
+    let totalPossible = 0;
         // if (!isAssignmentDue(matchingAssignment.due_at)) continue;
 
         // find all submissions belonging to this learner
@@ -217,19 +217,47 @@ function getLearnerData(course, ag, submissions) {
         totalPossible += possible;
         // if (isSubmissionLate(submissions[i].submission.submitted_at, matchingAssignment.due_at)) {
           // Apply penalty or handle late submission
-        }
+        
 
-        for (let j = 0; j < AssignmentGroup.assignments.length; j++) {
-          if (AssignmentGroup.assignments[j].id == submissions[i].assignment_id) {
+        // find the matching assignment to get due_at and points_possible  
+        let matchingAssignment = null;
+        for (let j = 0; j < ag.assignments.length; j++) {
+          if (ag.assignments[j].id === assignmentId) {
+            matchingAssignment = ag.assignments[j];
             // console.log("They Match!")
-            console.log("points Possible: " + AssignmentGroup.assignments[j].points_possible)
-            break;
+            console.log("points Possible: " + ag.assignments[j].points_possible)
+            break; // Quinn used break here
+
           // } else if (AssignmentGroup.assignments[1].id != submissions[i].assignment_id) {
             // console.log("They Match!")
             // console.log("points Possible: " + AssignmentGroup.assignments[1].points_possible)
           }
         }
+        // if no matching assignment found, skip it (continue = Quinn mentioned this)
+        if (matchingAssignment === null) {
+          continue;
+        }
+
+      
+       // apply late penalty if submitted after due date
+        if (isSubmissionLate(submittedAt, matchingAssignment.due_at)) {
+          let penalty = possible * 0.10;
+          console.log("Late penalty:", penalty);
+          subScore = subScore - penalty;
+        }
+         // add to running totals (what I think Quinn was building toward)
+        totalscore += submissions[i].submission.score;
+        totalPossible += possible;
+        // add to running totals (what professor was building toward)
+        
+
+        // store individual assignment percentage like "1: 0.94"
+        learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(3));
+
+        console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| %:", learnersReport[assignmentId]);
       }
+    }
+
 console.log("Total Score:", +totalscore);
     }
 
@@ -266,4 +294,4 @@ console.log("Total Score:", +totalscore);
   // console.log("Total sum:", sum(2,3))
   // console.log("Total sum:", sum(7,10))
   // console.log("Total sum:", sum(48,100))
-
+  
