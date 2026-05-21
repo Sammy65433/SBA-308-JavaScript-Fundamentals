@@ -170,6 +170,13 @@ function pointsPossible( agArray, assignment_id) {
 
 function getLearnerData(course, ag, submissions) {
 
+  try {
+    validateData(course, ag);
+  } catch (error) {
+    console.error("Data validation error:", error.message);
+    return [];
+  }
+
   const result = []
 
   const ids = []
@@ -204,6 +211,8 @@ function getLearnerData(course, ag, submissions) {
       
       //  process submissions for this learner
       if (submissions[i].learner_id === learnerId) {
+
+        //  data from submission for easy access
         let assignmentId   = submissions[i].assignment_id;
         let submittedAt    = submissions[i].submission.submitted_at;
         let subScore       = submissions[i].submission.score;
@@ -246,14 +255,34 @@ function getLearnerData(course, ag, submissions) {
           subScore = subScore - penalty;
         }
          // add to running totals (what I think Quinn was building toward)
+
+
+        //  totalScore    += subScore;   //this didnt work for some reason, 
+        // so I just added the original submission score without penalty.
+
         totalscore += submissions[i].submission.score;
         totalPossible += possible;
-        // add to running totals (what professor was building toward)
         
 
         // store individual assignment percentage like "1: 0.94"
-        learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(3));
+        learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(1));
 
+// parseFloat()
+// A floating point number parsed from the given string, or 
+// NaN when the first non-whitespace character cannot be converted to a number.        // parseFloat(3.14);
+// parseFloat("3.14");
+// parseFloat("  3.14  ");
+// parseFloat("314e-2");
+// parseFloat("0.0314E+2");
+// parseFloat("3.14some non-digit characters");
+// parseFloat({
+//   toString() {
+//     return "3.14";
+//   },
+// });
+
+
+        
         console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| %:", learnersReport[assignmentId]);
       }
     }
