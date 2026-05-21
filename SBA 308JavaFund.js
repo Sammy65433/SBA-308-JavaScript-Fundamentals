@@ -267,7 +267,7 @@ function getLearnerData(course, ag, submissions) {
         // store individual assignment percentage like "1: 0.94"
         learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(1));
 
-// parseFloat()
+// parseFloat() - MdN parsefloat 
 // A floating point number parsed from the given string, or 
 // NaN when the first non-whitespace character cannot be converted to a number.        // parseFloat(3.14);
 // parseFloat("3.14");
