@@ -228,11 +228,15 @@ function getLearnerData(course, ag, submissions) {
       if (submissions[i].learner_id === learnerId) {
 
         //  data from submission for easy access
+        // grab hw num
+        // grab it when they turn it in
+        // grab their score 
         let assignmentId   = submissions[i].assignment_id;
         let submittedAt    = submissions[i].submission.submitted_at;
         let subScore       = submissions[i].submission.score;
 
         // pointsPossible helper function - Quinn built this 
+        // if assignment 2 is worth 150, then possible = 150
         let possible = pointsPossible(ag.assignments, assignmentId);
 
                     // 
@@ -246,6 +250,8 @@ function getLearnerData(course, ag, submissions) {
         
 
         // find the matching assignment to get due_at and points_possible  
+        // I need due_at and other assignment info
+        // Find the assignment object that matches this submission
         let matchingAssignment = null;
         for (let j = 0; j < ag.assignments.length; j++) {
           if (ag.assignments[j].id === assignmentId) {
@@ -280,8 +286,8 @@ function getLearnerData(course, ag, submissions) {
 
         //  totalScore    += subScore;   //this didnt work for some reason, 
         // so I just added the original submission score without penalty.
-
-        totalscore += submissions[i].submission.score;
+        totalscore += subScore;
+        // totalscore += submissions[i].submission.score;
         totalPossible += possible;
         
 
@@ -289,7 +295,11 @@ function getLearnerData(course, ag, submissions) {
         // Quinn drew this on the board — 47 / 50 = 0.94, 150 / 150 = 1.0. 
         // That's just the percentage formula. subScore / possible
 
-        learnersReport[assignmentId] = parseFloat(subScore / possible).toFixed(3);
+      learnersReport[assignmentId] = Number((subScore / possible).toFixed(3));
+
+    // learnersReport[assignmentId] = parseFloat((subScore / possible).toFixed(3));
+
+
 // .toFixed() returns a string, not a number. So "0.9" instead of 0.9. 
 // To keep it a number wrap it in parseFloat():
 
@@ -319,7 +329,7 @@ function getLearnerData(course, ag, submissions) {
     // // quin drew this on screen: 240/300 = 0.80
     // totalScore = 
       if (totalPossible > 0) {
-      learnersReport.avg = parseFloat(totalscore / totalPossible).toFixed(2);
+      learnersReport.avg = Number(totalscore / totalPossible).toFixed(3);
     }
 
     console.log("Learner:", learnerId, "| avg:", learnersReport.avg);
