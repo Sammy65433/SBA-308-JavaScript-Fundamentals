@@ -1,0 +1,47 @@
+# SBA 308 - JavaScript Fundamentals
+ 
+## What This Project Does
+ 
+This project takes data about learners, assignments, and grades — 
+and turns it into a clean report for each learner:
+
+- Their **ID**
+- Their **weighted average** score across all assignments
+- Their **individual score** (as a percentage) for each assignment
+
+
+### The Helper Functions
+ 
+**`validateData(course, assignmentGroup)`**
+Checks that the assignment group actually belongs to the right course, 
+and that no assignment has zero points possible (which would cause a 
+divide-by-zero error). Throws an error if something is wrong.
+ 
+**`isAssignmentDue(dueDate)`**
+Takes a due date string like `"2023-01-25"` and checks if that date has already passed.
+Returns `true` if it has (meaning we should include it), `false` if it's in the future 
+(skip it).
+ 
+**`isSubmissionLate(submittedAt, dueAt)`**
+Compares when the student submitted vs when it was due. Returns `true` if they 
+submitted late.
+ 
+**`pointsPossible(agArray, assignment_id)`**
+Searches through the assignments array and returns the `points_possible` 
+value for a specific assignment ID.
+
+### The Main Function: `getLearnerData()`
+
+1. **Validates the data** using `validateData()` — stops early if something is wrong
+2. **Finds all unique learner IDs** by looping through submissions
+3. **For each learner**, loops through all submissions to find theirs
+4. **Skips assignments** that are not due yet
+5. **Applies a 10% late penalty** if the submission was turned in after the due date
+6. **Calculates a percentage**
+7. **Keeps a running total**
+
+
+- The sample data includes one assignment (`id: 3`) with a due date in the year 
+**3156** — this is intentional and is used to test that future assignments 
+are correctly skipped
+
