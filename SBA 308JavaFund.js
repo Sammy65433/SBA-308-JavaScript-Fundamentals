@@ -275,7 +275,12 @@ function getLearnerData(course, ag, submissions) {
         
 
         // store individual assignment percentage like "1: 0.94"
-        learnersReport[assignmentId] = (subScore / possible).toFixed(1);
+        // Quinn drew this on the board — 47 / 50 = 0.94, 150 / 150 = 1.0. 
+        // That's just the percentage formula. subScore / possible
+
+        learnersReport[assignmentId] = parseFloat(subScore / possible).toFixed(3);
+// .toFixed() returns a string, not a number. So "0.9" instead of 0.9. 
+// To keep it a number wrap it in parseFloat():
 
 // parseFloat() - MdN parsefloat 
 // A floating point number parsed from the given string, or 
@@ -293,7 +298,7 @@ function getLearnerData(course, ag, submissions) {
 
 
         
-        console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| Percentage %:", learnersReport[assignmentId]);
+        console.log("Learner:", learnerId, "| Assignment:", assignmentId, "| Score %:", learnersReport[assignmentId]);
       }
           // console.log("Total Score:", +totalscore);
 
@@ -303,7 +308,7 @@ function getLearnerData(course, ag, submissions) {
     // // quin drew this on screen: 240/300 = 0.80
     // totalScore = 
       if (totalPossible > 0) {
-      learnersReport.avg = (totalscore / totalPossible).toFixed(2);
+      learnersReport.avg = parseFloat(totalscore / totalPossible).toFixed(2);
     }
 
     console.log("Learner:", learnerId, "| avg:", learnersReport.avg);
@@ -357,6 +362,8 @@ console.log("FINAL RESULT:", result);
   // console.log("Total sum:", sum(7,10))
   // console.log("Total sum:", sum(48,100))
   
+
+  console.log("---------------| This is a Test!!!!!!! |-------------------------:");
 try {
   validateData({ id: 999, name: "Wrong Course" }, AssignmentGroup);
 } catch (e) {
